@@ -1,0 +1,85 @@
+<!-- views/pages/alamat/tambah.ejs -->
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title mb-4">Tambah Alamat Baru</h2>
+
+          <% if(messages.error) { %>
+          <div
+            class="alert alert-danger alert-dismissible fade show"
+            role="alert"
+          >
+            <%= messages.error %>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+          <% } %>
+
+          <form action="/alamat/tambah" method="POST">
+            <div class="mb-3">
+              <label for="alamat_jalan" class="form-label"
+                >Alamat Lengkap</label
+              >
+              <textarea
+                class="form-control"
+                id="alamat_jalan"
+                name="alamat_jalan"
+                rows="3"
+                required
+              ></textarea>
+              <div class="form-text">
+                Masukkan nama jalan, nomor rumah, rt/rw, kelurahan
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="kecamatan" class="form-label">Kecamatan</label>
+              <input
+                type="text"
+                class="form-control"
+                id="kecamatan"
+                name="kecamatan"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="provinsi" class="form-label">Provinsi</label>
+              <input
+                type="text"
+                class="form-control"
+                id="provinsi"
+                name="provinsi"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="kode_pos" class="form-label">Kode Pos</label>
+              <input
+                type="text"
+                class="form-control"
+                id="kode_pos"
+                name="kode_pos"
+                required
+              />
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-success">
+                Simpan Alamat
+              </button>
+              <a href="/alamat" class="btn btn-outline-secondary">Batal</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

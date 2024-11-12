@@ -1,0 +1,169 @@
+<!-- views/pages/keranjang/index.ejs -->
+<div class="container py-5">
+  <h2 class="mb-4">Keranjang Belanja</h2>
+
+  <!-- Keranjang Permak -->
+  <div class="mb-5">
+    <h3 class="mb-3">Layanan Permak</h3>
+    <% if (itemPermak && itemPermak.length > 0) { %>
+    <div class="row">
+      <!-- Daftar Item Permak -->
+      <div class="col-md-8">
+        <% itemPermak.forEach(function(item) { %>
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="row">
+              <!-- Gambar -->
+              <div class="col-md-3">
+                <img
+                  src="/uploads/permak/<%= item.gambar_permak %>"
+                  class="img-fluid rounded"
+                  style="max-height: 150px; width: 100%; object-fit: cover"
+                  alt="Gambar Permak"
+                />
+              </div>
+
+              <!-- Detail -->
+              <div class="col-md-9">
+                <h5><%= item.JenisPermak.nama_permak %></h5>
+                <div class="small text-muted">
+                  <p class="mb-1">
+                    Lokasi: <%= item.InstruksiKhusus.lokasi_perbaikan %>
+                  </p>
+                  <p class="mb-1">
+                    Deskripsi: <%= item.InstruksiKhusus.deskripsi_perbaikan %>
+                  </p>
+                  <p class="mb-1">
+                    Catatan: <%= item.InstruksiKhusus.catatan %>
+                  </p>
+                </div>
+                <div
+                  class="d-flex justify-content-between align-items-center mt-3"
+                >
+                  <h6 class="mb-0">
+                    Rp <%= Number(item.harga_per_item).toLocaleString('id-ID')
+                    %>
+                  </h6>
+                  <form
+                    action="/cart/delete/<%= item.id_item_keranjang %>?_method=DELETE"
+                    method="POST"
+                  >
+                    <button type="submit" class="btn btn-danger btn-sm">
+                      Hapus
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+
+      <!-- Ringkasan Permak -->
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Ringkasan Permak</h5>
+            <div class="d-flex justify-content-between mb-3">
+              <span>Total Harga</span>
+              <strong
+                >Rp <%= totalHargaPermak.toLocaleString('id-ID') %></strong
+              >
+            </div>
+            <% if (totalHargaPermak > 0) { %>
+            <a href="/checkout/permak" class="btn btn-success w-100"
+              >Checkout Permak</a
+            >
+            <% } else { %>
+            <button class="btn btn-success w-100" disabled>
+              Checkout Permak
+            </button>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } else { %>
+    <div class="alert alert-info">
+      <p class="mb-0">Keranjang permak masih kosong</p>
+      <a href="/permak" class="btn btn-primary mt-2">Lihat Layanan Permak</a>
+    </div>
+    <% } %>
+  </div>
+
+  <!-- Keranjang Jahit -->
+  <div class="mt-5">
+    <h3 class="mb-3">Layanan Jahit</h3>
+    <% if (itemJahit && itemJahit.length > 0) { %>
+    <div class="row">
+      <!-- Daftar Item Jahit -->
+      <div class="col-md-8">
+        <% itemJahit.forEach(function(item) { %>
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3">
+                <% if (item.VarianPakaian && item.VarianPakaian.Pakaian) { %>
+                <img
+                  src="/uploads/pakaian/<%= item.VarianPakaian.Pakaian.gambar_utama %>"
+                  class="img-fluid rounded"
+                  style="max-height: 150px; width: 100%; object-fit: cover"
+                  alt="Gambar Pakaian"
+                />
+                <% } %>
+              </div>
+              <div class="col-md-9">
+                <h5>
+                  <%= item.VarianPakaian?.Pakaian?.nama_pakaian || 'Pakaian' %>
+                </h5>
+                <p class="small text-muted">
+                  Ukuran: <%= item.VarianPakaian?.ukuran || '-' %>
+                </p>
+                <div
+                  class="d-flex justify-content-between align-items-center mt-3"
+                >
+                  <h6 class="mb-0">
+                    Rp <%= Number(item.harga_per_item).toLocaleString('id-ID')
+                    %>
+                  </h6>
+                  <form
+                    action="/cart/delete/<%= item.id_item_keranjang %>?_method=DELETE"
+                    method="POST"
+                  >
+                    <button type="submit" class="btn btn-danger btn-sm">
+                      Hapus
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+
+      <!-- Ringkasan Jahit -->
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Ringkasan Jahit</h5>
+            <div class="d-flex justify-content-between mb-3">
+              <span>Total Harga</span>
+              <strong>Rp <%= totalHargaJahit.toLocaleString('id-ID') %></strong>
+            </div>
+            <a href="/checkout/jahit" class="btn btn-success w-100"
+              >Checkout Jahit</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } else { %>
+    <div class="alert alert-info">
+      <p class="mb-0">Keranjang jahit masih kosong</p>
+      <a href="/pakaian" class="btn btn-primary mt-2">Lihat Layanan Jahit</a>
+    </div>
+    <% } %>
+  </div>
+</div>

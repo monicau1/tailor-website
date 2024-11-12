@@ -1,0 +1,262 @@
+<!-- views/pages/orders/detail.ejs -->
+<div class="container py-5">
+  <div class="row">
+    <div class="col-12 mb-4">
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/orders">Daftar Pesanan</a></li>
+          <li class="breadcrumb-item active">
+            Detail Pesanan #<%= pesanan.id_pesanan %>
+          </li>
+        </ol>
+      </nav>
+    </div>
+
+    <!-- Informasi Utama Pesanan -->
+    <div class="col-md-8">
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="card-title mb-0">
+              Detail Pesanan #<%= pesanan.id_pesanan %>
+            </h4>
+            <span
+              class="badge <%= pesanan.StatusPesanan.nama_status === 'menunggu pembayaran' ? 'bg-warning' : pesanan.StatusPesanan.nama_status === 'diproses' ? 'bg-info' : pesanan.StatusPesanan.nama_status === 'selesai' ? 'bg-success' : 'bg-secondary' %>"
+            >
+              <%= pesanan.StatusPesanan.nama_status %>
+            </span>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <p class="mb-1"><strong>Tanggal Pesanan:</strong></p>
+              <p>
+                <%= new
+                Date(pesanan.tanggal_pesanan).toLocaleDateString('id-ID', { day:
+                'numeric', month: 'long', year: 'numeric' }) %>
+              </p>
+            </div>
+
+            <% if(pesanan.estimasi_selesai) { %>
+            <div class="col-md-6">
+              <p class="mb-1"><strong>Estimasi Selesai:</strong></p>
+              <p>
+                <%= new
+                Date(pesanan.estimasi_selesai).toLocaleDateString('id-ID', {
+                day: 'numeric', month: 'long', year: 'numeric' }) %>
+              </p>
+            </div>
+            <% } %> <% if(pesanan.catatan_pesanan) { %>
+            <div class="col-12">
+              <p class="mb-1"><strong>Catatan Pesanan:</strong></p>
+              <p class="text-muted"><%= pesanan.catatan_pesanan %></p>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Item Pesanan -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Item Pesanan</h5>
+
+          <% pesanan.ItemPesanan.forEach(item => { %>
+          <div class="border-bottom pb-3 mb-3">
+            <div class="row">
+              <!-- Gambar -->
+              <div class="col-md-3 mb-3 mb-md-0">
+                <% if(item.gambar_permak) { %>
+                <img
+                  src="/uploads/permak/<%= item.gambar_permak %>"
+                  class="img-fluid rounded"
+                  alt="Gambar Permak"
+                />
+                <% } else { %>
+                <div
+                  class="bg-light rounded d-flex align-items-center justify-content-center"
+                  style="height: 100px"
+                >
+                  <span class="text-muted">No Image</span>
+                </div>
+                <% } %>
+              </div>
+
+              <!-- Detail Item -->
+              <div class="col-md-9">
+                <% if(item.JenisPermak) { %>
+                <!-- Jika item permak -->
+                <h6><%= item.JenisPermak.nama_permak %></h6>
+                <% if(item.InstruksiKhusus) { %>
+                <p class="small mb-1">
+                  Lokasi: <%= item.InstruksiKhusus.lokasi_perbaikan %>
+                </p>
+                <p class="small mb-1">
+                  Deskripsi: <%= item.InstruksiKhusus.deskripsi_perbaikan %>
+                </p>
+                <p class="small mb-2">
+                  Catatan: <%= item.InstruksiKhusus.catatan || '-' %>
+                </p>
+                <% } %> <% } else if(item.VarianPakaian) { %>
+                <!-- Jika item jahit -->
+                <h6><%= item.VarianPakaian.Pakaian.nama_pakaian %></h6>
+                <p class="small mb-1">
+                  Ukuran: <%= item.VarianPakaian.ukuran %>
+                </p>
+                <% if(item.UkuranKhusus) { %>
+                <p class="small mb-2">
+                  Ukuran Khusus: Dada <%= item.UkuranKhusus.ukuran_dada %>cm,
+                  Pinggang <%= item.UkuranKhusus.ukuran_pinggang %>cm
+                </p>
+                <% } %> <% } %>
+
+                <div
+                  class="d-flex justify-content-between align-items-center mt-2"
+                >
+                  <span class="text-muted">Qty: <%= item.kuantitas %></span>
+                  <span class="fw-bold">
+                    Rp <%= (item.harga_per_item *
+                    item.kuantitas).toLocaleString('id-ID') %>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% }); %>
+
+          <!-- Total -->
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <h6 class="fw-bold mb-0">Total Pembayaran</h6>
+            <h6 class="fw-bold mb-0">
+              Rp <%= pesanan.jumlah_total.toLocaleString('id-ID') %>
+            </h6>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar Informasi -->
+    <div class="col-md-4">
+      <!-- Informasi Pembayaran -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Informasi Pembayaran</h5>
+
+          <% if(pesanan.Pembayaran) { %>
+          <div class="mb-3">
+            <p class="mb-1"><strong>Status:</strong></p>
+            <span
+              class="badge <%= pesanan.Pembayaran.status_pembayaran === 'paid' ? 'bg-success' : pesanan.Pembayaran.status_pembayaran === 'pending' ? 'bg-warning' : 'bg-danger' %>"
+            >
+              <%= pesanan.Pembayaran.status_pembayaran %>
+            </span>
+          </div>
+
+          <p class="mb-1"><strong>Metode Pembayaran:</strong></p>
+          <p class="mb-3"><%= pesanan.Pembayaran.metode_pembayaran %></p>
+
+          <% if(pesanan.Pembayaran.bukti_pembayaran) { %>
+          <p class="mb-1"><strong>Bukti Pembayaran:</strong></p>
+          <img
+            src="/uploads/payments/<%= pesanan.Pembayaran.bukti_pembayaran %>"
+            class="img-fluid rounded mb-3"
+            alt="Bukti Pembayaran"
+          />
+          <% } %> <% } else if(pesanan.StatusPesanan.nama_status === 'menunggu
+          pembayaran') { %>
+          <div class="alert alert-warning">
+            <p class="mb-2">Silakan lakukan pembayaran sebesar:</p>
+            <h5 class="mb-3">
+              Rp <%= pesanan.jumlah_total.toLocaleString('id-ID') %>
+            </h5>
+            <hr />
+            <p class="mb-2"><strong>Transfer ke:</strong></p>
+            <p class="mb-1">Bank BCA</p>
+            <p class="mb-1">1234567890</p>
+            <p class="mb-3">a.n. TOKO JAHIT</p>
+
+            <a
+              href="/orders/<%= pesanan.id_pesanan %>/upload-payment"
+              class="btn btn-warning w-100"
+            >
+              Upload Bukti Pembayaran
+            </a>
+          </div>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Status Pesanan -->
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Status Pesanan</h5>
+
+          <div class="timeline">
+            <% if(pesanan.RiwayatStatusPesanan) { %> <%
+            pesanan.RiwayatStatusPesanan.forEach(riwayat => { %>
+            <div class="timeline-item">
+              <div
+                class="timeline-badge <%= riwayat.StatusRiwayat.nama_status === 'selesai' ? 'bg-success' : riwayat.StatusRiwayat.nama_status === 'diproses' ? 'bg-info' : 'bg-secondary' %>"
+              ></div>
+              <div class="timeline-content">
+                <h6 class="mb-1"><%= riwayat.StatusRiwayat.nama_status %></h6>
+                <p class="small text-muted mb-0">
+                  <%= new
+                  Date(riwayat.tanggal_status).toLocaleDateString('id-ID', {
+                  day: 'numeric', month: 'long', year: 'numeric', hour:
+                  '2-digit', minute: '2-digit' }) %>
+                </p>
+                <% if(riwayat.keterangan) { %>
+                <p class="small mt-1"><%= riwayat.keterangan %></p>
+                <% } %>
+              </div>
+            </div>
+            <% }); %> <% } else { %>
+            <p class="text-muted">Belum ada riwayat status</p>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .badge {
+    font-size: 0.9rem;
+    padding: 0.5em 1em;
+  }
+
+  .timeline {
+    position: relative;
+    padding-left: 30px;
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-bottom: 1.5rem;
+  }
+
+  .timeline-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .timeline-badge {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    position: absolute;
+    left: -6px;
+    top: 4px;
+  }
+
+  .timeline-content {
+    padding-left: 15px;
+    border-left: 2px solid #dee2e6;
+  }
+
+  .timeline-item:last-child .timeline-content {
+    border-left: none;
+  }
+</style>

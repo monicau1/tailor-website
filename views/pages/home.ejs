@@ -1,0 +1,84 @@
+<!-- views/pages/home.ejs -->
+<div class="container py-5">
+  <div class="row">
+    <!-- Welcome Section -->
+    <div class="col-12 text-center mb-5">
+      <h1>Selamat Datang di Toko Jahit</h1>
+      <% if(isAuthenticated) { %>
+      <p class="lead">Halo, <%= user.name %>!</p>
+      <% } %>
+    </div>
+
+    <!-- Layanan Section -->
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-body text-center">
+          <h3 class="card-title">Layanan Permak</h3>
+          <p class="card-text">
+            Perbaiki dan sesuaikan pakaian Anda dengan layanan permak kami.
+          </p>
+          <a href="/permak" class="btn btn-success">Lihat Layanan Permak</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-body text-center">
+          <h3 class="card-title">Jahit Pakaian</h3>
+          <p class="card-text">
+            Buat pakaian sesuai keinginan Anda dengan layanan jahit kami.
+          </p>
+          <a href="/pakaian" class="btn btn-success">Lihat Layanan Jahit</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="col-12 mt-5">
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="text-center">
+            <i class="fas fa-tshirt fa-3x mb-3 text-success"></i>
+            <h4>Kualitas Terbaik</h4>
+            <p>Dikerjakan oleh penjahit profesional</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-center">
+            <i class="fas fa-clock fa-3x mb-3 text-success"></i>
+            <h4>Tepat Waktu</h4>
+            <p>Estimasi pengerjaan yang akurat</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-center">
+            <i class="fas fa-hand-holding-heart fa-3x mb-3 text-success"></i>
+            <h4>Pelayanan Terbaik</h4>
+            <p>Kepuasan pelanggan prioritas kami</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .card {
+    transition: transform 0.3s;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+  }
+
+  .btn-success {
+    padding: 10px 25px;
+  }
+
+  .fas {
+    color: #28a745;
+  }
+</style>

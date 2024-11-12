@@ -1,0 +1,148 @@
+<!-- views/pages/layanan/permak/jenis-detail.ejs -->
+<div class="container py-5">
+  <div class="row">
+    <div class="col-md-6">
+      <h2><%= jenisPermak.nama_permak %></h2>
+      <p class="text-muted"><%= jenisPermak.deskripsi_jenis_permak %></p>
+      <h4 class="mt-4">Rp <%= jenisPermak.harga.toLocaleString('id-ID') %></h4>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">Detail Permak</h3>
+
+          <!-- Debug info -->
+          <% if (messages.error) { %>
+          <div class="alert alert-danger" role="alert">
+            <%= messages.error %>
+          </div>
+          <% } %>
+
+          <form
+            action="/permak/add-to-cart/<%= jenisPermak.id_jenis_permak %>"
+            method="POST"
+            enctype="multipart/form-data"
+            id="permakForm"
+          >
+            <!-- Catatan -->
+            <div class="mb-3">
+              <label for="catatan" class="form-label"
+                >Catatan Umum <span class="text-danger">*</span></label
+              >
+              <textarea
+                class="form-control"
+                id="catatan"
+                name="catatan"
+                rows="2"
+                required
+              >
+<%= locals.formData ? formData.catatan : '' %></textarea
+              >
+            </div>
+
+            <!-- Lokasi -->
+            <div class="mb-3">
+              <label for="lokasi_perbaikan" class="form-label"
+                >Lokasi Perbaikan <span class="text-danger">*</span></label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="lokasi_perbaikan"
+                name="lokasi_perbaikan"
+                value="<%= locals.formData ? formData.lokasi_perbaikan : '' %>"
+                required
+              />
+            </div>
+
+            <!-- Deskripsi Perbaikan -->
+            <div class="mb-3">
+              <label for="deskripsi_perbaikan" class="form-label"
+                >Deskripsi Perbaikan <span class="text-danger">*</span></label
+              >
+              <textarea
+                class="form-control"
+                id="deskripsi_perbaikan"
+                name="deskripsi_perbaikan"
+                rows="3"
+                required
+              >
+<%= locals.formData ? formData.deskripsi_perbaikan : '' %></textarea
+              >
+            </div>
+
+            <!-- Deskripsi Item -->
+            <div class="mb-3">
+              <label for="deskripsi_item" class="form-label"
+                >Deskripsi Pakaian <span class="text-danger">*</span></label
+              >
+              <textarea
+                class="form-control"
+                id="deskripsi_item"
+                name="deskripsi_item"
+                rows="2"
+                required
+              >
+<%= locals.formData ? formData.deskripsi_item : '' %></textarea
+              >
+            </div>
+
+            <!-- Upload -->
+            <div class="mb-3">
+              <label for="gambar_permak" class="form-label"
+                >Foto Pakaian <span class="text-danger">*</span></label
+              >
+              <input
+                type="file"
+                class="form-control"
+                id="gambar_permak"
+                name="gambar_permak"
+                accept="image/*"
+                required
+              />
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn btn-success w-100" id="submitBtn">
+              Tambah ke Keranjang
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("permakForm");
+    const submitBtn = document.getElementById("submitBtn");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault(); // Prevent default submission
+
+      // Debug: Log form data
+      const formData = new FormData(this);
+      console.log("Form data being sent:");
+      formData.forEach((value, key) => {
+        console.log(key + ":", value);
+      });
+
+      // Check if all required fields are filled
+      const isValid = form.checkValidity();
+      if (!isValid) {
+        form.reportValidity();
+        return;
+      }
+
+      // Disable button
+      submitBtn.disabled = true;
+      submitBtn.innerHTML =
+        '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Memproses...';
+
+      // Submit form
+      this.submit();
+    });
+  });
+</script>

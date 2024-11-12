@@ -1,0 +1,161 @@
+<!-- views/pages/layanan/permak/index.ejs -->
+<div class="container py-5">
+  <div class="row">
+    <!-- Header -->
+    <div class="col-12 mb-4">
+      <h1 class="text-center">Layanan Permak</h1>
+      <p class="text-center text-muted">
+        Pilih kategori layanan permak yang Anda butuhkan
+      </p>
+    </div>
+
+    <!-- Kategori Grid -->
+    <div class="col-12">
+      <div class="row">
+        <% if(kategoriPermak && kategoriPermak.length > 0) { %> <%
+        kategoriPermak.forEach(kategori => { %>
+        <div class="col-md-4">
+          <div class="card mb-4 product-wap rounded-0 h-100">
+            <div class="card rounded-0">
+              <!-- Gambar Kategori -->
+              <% if(kategori.nama_file_gambar) { %>
+              <img
+                class="card-img rounded-0 img-fluid"
+                src="/uploads/kategori/<%= kategori.nama_file_gambar %>"
+                alt="<%= kategori.nama_kategori_permak %>"
+              />
+              <% } else { %>
+              <img
+                class="card-img rounded-0 img-fluid"
+                src="/images/default-category.jpg"
+                alt="Default Image"
+              />
+              <% } %>
+
+              <!-- Overlay dengan efek hover -->
+              <div
+                class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center"
+              >
+                <ul class="list-unstyled">
+                  <li>
+                    <a
+                      class="btn btn-success text-white mt-2"
+                      href="/permak/kategori/<%= kategori.id_kategori_permak %>"
+                    >
+                      <i class="far fa-eye"></i> Lihat Detail
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Informasi Kategori -->
+            <div class="card-body text-center">
+              <a
+                href="/permak/kategori/<%= kategori.id_kategori_permak %>"
+                class="h3 text-decoration-none"
+              >
+                <%= kategori.nama_kategori_permak %>
+              </a>
+
+              <!-- Jumlah jenis permak dalam kategori -->
+              <p class="text-center mb-0">
+                <%= kategori.JenisPermak.length %> Jenis Layanan
+              </p>
+
+              <!-- Deskripsi singkat -->
+              <% if(kategori.deskripsi) { %>
+              <p class="text-muted mt-2">
+                <%= kategori.deskripsi.length > 100 ?
+                kategori.deskripsi.substring(0, 100) + '...' :
+                kategori.deskripsi %>
+              </p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <% }) %> <% } else { %>
+        <div class="col-12">
+          <div class="alert alert-info text-center">
+            Belum ada kategori permak yang tersedia.
+          </div>
+        </div>
+        <% } %>
+      </div>
+
+      <!-- Pagination -->
+      <% if (totalPages > 1) { %>
+      <div class="row">
+        <div class="col-12">
+          <ul class="pagination pagination-lg justify-content-center">
+            <% for(let i = 1; i <= totalPages; i++) { %>
+            <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+              <a
+                class="page-link rounded-0 mr-3 shadow-sm border-top-0 border-left-0 text-dark"
+                href="/permak?page=<%= i %>"
+              >
+                <%= i %>
+              </a>
+            </li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<!-- Tambahkan CSS kustom di bagian style -->
+<style>
+  .product-wap {
+    transition: all 0.3s;
+  }
+
+  .product-wap:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: all 0.3s;
+  }
+
+  .product-wap:hover .product-overlay {
+    opacity: 1;
+  }
+
+  .card-img {
+    height: 250px; /* Sesuaikan tinggi gambar */
+    object-fit: cover;
+  }
+
+  .product-overlay ul li {
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s;
+  }
+
+  .product-wap:hover .product-overlay ul li {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* Animasi smooth untuk hover */
+  .product-wap {
+    transition: all 0.3s ease-in-out;
+  }
+
+  /* Style untuk badges/label */
+  .category-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+  }
+</style>

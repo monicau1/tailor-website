@@ -1,0 +1,253 @@
+<!-- views/pages/layanan/pakaian/detail.ejs -->
+<div class="container pb-5">
+  <!-- Breadcrumb -->
+  <div class="row">
+    <div class="col-12 py-3">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item">
+            <a href="/pakaian">Katalog Pakaian</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            <%= pakaian.nama_pakaian %>
+          </li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Gambar Pakaian -->
+    <div class="col-lg-5">
+      <div class="card mb-3">
+        <% if(pakaian.GambarPakaian && pakaian.GambarPakaian.length > 0) { %>
+        <img
+          class="card-img img-fluid"
+          src="/uploads/pakaian/<%= pakaian.GambarPakaian[0].nama_file %>"
+          alt="<%= pakaian.nama_pakaian %>"
+        />
+        <% } else { %>
+        <img
+          class="card-img img-fluid"
+          src="/images/default-product.jpg"
+          alt="Default Image"
+        />
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Informasi Pakaian -->
+    <div class="col-lg-7">
+      <div class="card">
+        <div class="card-body">
+          <h1 class="h2"><%= pakaian.nama_pakaian %></h1>
+
+          <p class="h3 py-2">Rp <%= pakaian.harga.toLocaleString('id-ID') %></p>
+
+          <% if(pakaian.deskripsi_pakaian) { %>
+          <p class="py-2"><%= pakaian.deskripsi_pakaian %></p>
+          <% } %>
+
+          <form
+            action="/pakaian/add-to-cart/<%= pakaian.id_pakaian %>"
+            method="POST"
+            class="mt-4"
+          >
+            <!-- Ukuran -->
+            <% if(pakaian.VarianPakaian && pakaian.VarianPakaian.length > 0) {
+            %>
+            <div class="mb-3">
+              <label class="form-label">Ukuran:</label>
+              <select name="varianId" class="form-select" required>
+                <option value="">Pilih Ukuran</option>
+                <% pakaian.VarianPakaian.forEach(varian => { %>
+                <option value="<%= varian.id_varian_pakaian %>">
+                  <%= varian.ukuran %>
+                </option>
+                <% }) %>
+              </select>
+            </div>
+            <% } %>
+
+            <!-- Custom Ukuran -->
+            <div class="mb-3">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="customSize"
+                  name="isCustomSize"
+                />
+                <label class="form-check-label" for="customSize">
+                  Gunakan Ukuran Khusus
+                </label>
+              </div>
+            </div>
+
+            <div id="customSizeForm" class="d-none">
+              <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <label class="form-label">Ukuran Dada (cm)</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="ukuran_dada"
+                    step="0.1"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Ukuran Pinggang (cm)</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="ukuran_pinggang"
+                    step="0.1"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Panjang Tubuh (cm)</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="panjang_tubuh"
+                    step="0.1"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Panjang Kaki (cm)</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="panjang_kaki"
+                    step="0.1"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Lebar Paha (cm)</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="lebar_paha"
+                    step="0.1"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Catatan Tambahan -->
+            <div class="mb-3">
+              <label class="form-label">Catatan Khusus:</label>
+              <textarea
+                class="form-control"
+                name="catatan"
+                rows="3"
+                placeholder="Tambahkan catatan khusus untuk penjahit..."
+              ></textarea>
+            </div>
+
+            <!-- Quantity -->
+            <div class="row pb-3">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Jumlah:</label>
+                <div class="input-group">
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    id="decrementBtn"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    class="form-control text-center"
+                    id="quantity"
+                    name="quantity"
+                    value="1"
+                    min="1"
+                    required
+                  />
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    id="incrementBtn"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="row pb-3">
+              <div class="col d-grid">
+                <button type="submit" class="btn btn-success btn-lg">
+                  Pesan Sekarang
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript untuk form -->
+<script>
+  // Toggle custom size form
+  document.getElementById("customSize").addEventListener("change", function () {
+    const customSizeForm = document.getElementById("customSizeForm");
+    if (this.checked) {
+      customSizeForm.classList.remove("d-none");
+    } else {
+      customSizeForm.classList.add("d-none");
+    }
+  });
+
+  // Quantity controls
+  const quantityInput = document.getElementById("quantity");
+  const decrementBtn = document.getElementById("decrementBtn");
+  const incrementBtn = document.getElementById("incrementBtn");
+
+  decrementBtn.addEventListener("click", () => {
+    const currentValue = parseInt(quantityInput.value);
+    if (currentValue > 1) {
+      quantityInput.value = currentValue - 1;
+    }
+  });
+
+  incrementBtn.addEventListener("click", () => {
+    const currentValue = parseInt(quantityInput.value);
+    quantityInput.value = currentValue + 1;
+  });
+</script>
+
+<style>
+  .card-img {
+    max-height: 500px;
+    object-fit: cover;
+  }
+
+  .breadcrumb {
+    background-color: #f8f9fa;
+    padding: 0.75rem 1rem;
+    border-radius: 0.25rem;
+  }
+
+  .btn-success {
+    transition: all 0.3s;
+  }
+
+  .btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  #quantity {
+    width: 70px;
+  }
+
+  .input-group {
+    width: 150px;
+  }
+</style>

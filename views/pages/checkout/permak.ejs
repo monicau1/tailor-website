@@ -1,0 +1,126 @@
+<!-- views/pages/checkout/permak.ejs -->
+<div class="container py-5">
+  <h2 class="mb-4">Checkout Permak</h2>
+
+  <!-- Alert Messages -->
+  <% if(messages.error) { %>
+  <div class="alert alert-danger"><%= messages.error %></div>
+  <% } %>
+
+  <div class="row">
+    <!-- Form Checkout -->
+    <div class="col-md-8">
+      <form action="/checkout/permak" method="POST">
+        <!-- Pilih Alamat -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title">Alamat Pengiriman</h5>
+
+            <% if(alamatPelanggan && alamatPelanggan.length > 0) { %> <%
+            alamatPelanggan.forEach(alamat => { %>
+            <div class="form-check mb-3">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="alamat_id"
+                value="<%= alamat.id_alamat_pelanggan %>"
+                id="alamat<%= alamat.id_alamat_pelanggan %>"
+                required
+              />
+              <label
+                class="form-check-label"
+                for="alamat<%= alamat.id_alamat_pelanggan %>"
+              >
+                <strong><%= alamat.alamat_jalan %></strong><br />
+                <%= alamat.kecamatan %>, <%= alamat.provinsi %> <%=
+                alamat.kode_pos %>
+              </label>
+            </div>
+            <% }) %> <% } else { %>
+            <div class="alert alert-warning">
+              Anda belum memiliki alamat tersimpan.
+              <a href="/account/addresses/add" class="alert-link"
+                >Tambah alamat baru</a
+              >
+            </div>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Metode Pembayaran -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title">Metode Pembayaran</h5>
+            <div class="form-check mb-3">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="metode_pembayaran"
+                value="transfer"
+                id="transfer"
+                required
+              />
+              <label class="form-check-label" for="transfer">
+                Transfer Bank
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Catatan -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title">Catatan Tambahan</h5>
+            <textarea
+              name="catatan"
+              class="form-control"
+              rows="3"
+              placeholder="Tambahkan catatan untuk pesanan Anda (opsional)"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Tombol Submit -->
+        <div class="d-grid">
+          <button type="submit" class="btn btn-success btn-lg">
+            Buat Pesanan
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Ringkasan Pesanan -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Ringkasan Pesanan</h5>
+
+          <!-- Daftar Item -->
+          <% keranjang.ItemKeranjang.forEach(item => { %>
+          <div class="d-flex justify-content-between mb-3">
+            <div>
+              <h6><%= item.JenisPermak.nama_permak %></h6>
+              <small class="text-muted">
+                <%= item.InstruksiKhusus.lokasi_perbaikan %>
+              </small>
+            </div>
+            <div class="text-end">
+              <span>Rp <%= item.harga_per_item.toLocaleString('id-ID') %></span
+              ><br />
+              <small class="text-muted">x<%= item.kuantitas %></small>
+            </div>
+          </div>
+          <% }) %>
+
+          <hr />
+
+          <!-- Total -->
+          <div class="d-flex justify-content-between mb-3">
+            <strong>Total Pembayaran</strong>
+            <strong>Rp <%= total.toLocaleString('id-ID') %></strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

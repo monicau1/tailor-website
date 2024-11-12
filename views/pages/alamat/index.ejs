@@ -1,0 +1,65 @@
+<!-- views/pages/alamat/index.ejs -->
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Daftar Alamat</h2>
+    <a href="/alamat/tambah" class="btn btn-success">
+      <i class="fas fa-plus"></i> Tambah Alamat
+    </a>
+  </div>
+
+  <% if(messages.success) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <%= messages.success %>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+  <% } %> <% if(messages.error) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <%= messages.error %>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+  <% } %>
+
+  <div class="row">
+    <% if(daftarAlamat && daftarAlamat.length > 0) { %> <%
+    daftarAlamat.forEach(alamat => { %>
+    <div class="col-md-6 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Alamat Pengiriman</h5>
+          <p class="card-text">
+            <%= alamat.alamat_jalan %><br />
+            <%= alamat.kecamatan %><br />
+            <%= alamat.provinsi %><br />
+            <%= alamat.kode_pos %><br />
+            <%= alamat.negara %>
+          </p>
+          <form
+            action="/alamat/hapus/<%= alamat.id_alamat_pelanggan %>?_method=DELETE"
+            method="POST"
+            class="d-inline"
+            onsubmit="return confirm('Apakah Anda yakin ingin menghapus alamat ini?')"
+          >
+            <button type="submit" class="btn btn-danger">
+              <i class="fas fa-trash"></i> Hapus
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <% }); %> <% } else { %>
+    <div class="col-12">
+      <div class="alert alert-info">Anda belum memiliki alamat tersimpan.</div>
+    </div>
+    <% } %>
+  </div>
+</div>

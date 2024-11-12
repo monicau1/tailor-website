@@ -1,0 +1,21 @@
+.
+└── tailor-website/
+    ├── app.js
+    ├── .env
+    ├── package.json
+    ├── package-lock.json
+    ├── utils/
+    │   └── db.js
+    ├── routes
+    ├── controllers
+    ├── middlewares
+    ├── models
+    ├── public/
+    │   ├── css
+    │   ├── images
+    │   └── js
+    ├── views/
+    │   ├── partials
+    │   ├── pages
+    │   └── layouts
+    └── node_modules
