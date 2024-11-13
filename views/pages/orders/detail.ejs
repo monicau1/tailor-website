@@ -1,8 +1,8 @@
 <!-- views/pages/orders/detail.ejs -->
 <div class="container py-5">
   <div class="row">
+    <!-- Header -->
     <div class="col-12 mb-4">
-      <!-- Breadcrumb -->
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="/orders">Daftar Pesanan</a></li>
@@ -13,14 +13,13 @@
       </nav>
     </div>
 
-    <!-- Informasi Utama Pesanan -->
+    <!-- Main Content -->
     <div class="col-md-8">
+      <!-- Informasi Utama -->
       <div class="card mb-4">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="card-title mb-0">
-              Detail Pesanan #<%= pesanan.id_pesanan %>
-            </h4>
+            <h4 class="mb-0">Detail Pesanan #<%= pesanan.id_pesanan %></h4>
             <span
               class="badge <%= pesanan.StatusPesanan.nama_status === 'menunggu pembayaran' ? 'bg-warning' : pesanan.StatusPesanan.nama_status === 'diproses' ? 'bg-info' : pesanan.StatusPesanan.nama_status === 'selesai' ? 'bg-success' : 'bg-secondary' %>"
             >
@@ -28,36 +27,30 @@
             </span>
           </div>
 
-          <div class="row g-3">
+          <div class="row">
             <div class="col-md-6">
               <p class="mb-1"><strong>Tanggal Pesanan:</strong></p>
-              <p>
+              <p class="text-muted">
                 <%= new
                 Date(pesanan.tanggal_pesanan).toLocaleDateString('id-ID', { day:
                 'numeric', month: 'long', year: 'numeric' }) %>
               </p>
             </div>
-
             <% if(pesanan.estimasi_selesai) { %>
             <div class="col-md-6">
               <p class="mb-1"><strong>Estimasi Selesai:</strong></p>
-              <p>
+              <p class="text-muted">
                 <%= new
                 Date(pesanan.estimasi_selesai).toLocaleDateString('id-ID', {
                 day: 'numeric', month: 'long', year: 'numeric' }) %>
               </p>
-            </div>
-            <% } %> <% if(pesanan.catatan_pesanan) { %>
-            <div class="col-12">
-              <p class="mb-1"><strong>Catatan Pesanan:</strong></p>
-              <p class="text-muted"><%= pesanan.catatan_pesanan %></p>
             </div>
             <% } %>
           </div>
         </div>
       </div>
 
-      <!-- Detail Item Pesanan -->
+      <!-- Daftar Item -->
       <div class="card mb-4">
         <div class="card-body">
           <h5 class="card-title mb-4">Item Pesanan</h5>
@@ -71,14 +64,14 @@
                 <img
                   src="/uploads/permak/<%= item.gambar_permak %>"
                   class="img-fluid rounded"
-                  alt="Gambar Permak"
+                  alt="Gambar Item"
                 />
                 <% } else { %>
                 <div
                   class="bg-light rounded d-flex align-items-center justify-content-center"
                   style="height: 100px"
                 >
-                  <span class="text-muted">No Image</span>
+                  <i class="fas fa-box fa-2x text-muted"></i>
                 </div>
                 <% } %>
               </div>
@@ -86,39 +79,28 @@
               <!-- Detail Item -->
               <div class="col-md-9">
                 <% if(item.JenisPermak) { %>
-                <!-- Jika item permak -->
                 <h6><%= item.JenisPermak.nama_permak %></h6>
                 <% if(item.InstruksiKhusus) { %>
-                <p class="small mb-1">
+                <p class="small mb-1 text-muted">
                   Lokasi: <%= item.InstruksiKhusus.lokasi_perbaikan %>
                 </p>
-                <p class="small mb-1">
+                <p class="small mb-1 text-muted">
                   Deskripsi: <%= item.InstruksiKhusus.deskripsi_perbaikan %>
                 </p>
-                <p class="small mb-2">
-                  Catatan: <%= item.InstruksiKhusus.catatan || '-' %>
-                </p>
-                <% } %> <% } else if(item.VarianPakaian) { %>
-                <!-- Jika item jahit -->
+                <% } %> <% } else if(item.VarianPakaian &&
+                item.VarianPakaian.Pakaian) { %>
                 <h6><%= item.VarianPakaian.Pakaian.nama_pakaian %></h6>
-                <p class="small mb-1">
+                <p class="small mb-1 text-muted">
                   Ukuran: <%= item.VarianPakaian.ukuran %>
                 </p>
-                <% if(item.UkuranKhusus) { %>
-                <p class="small mb-2">
-                  Ukuran Khusus: Dada <%= item.UkuranKhusus.ukuran_dada %>cm,
-                  Pinggang <%= item.UkuranKhusus.ukuran_pinggang %>cm
-                </p>
-                <% } %> <% } %>
+                <% } %>
 
-                <div
-                  class="d-flex justify-content-between align-items-center mt-2"
-                >
-                  <span class="text-muted">Qty: <%= item.kuantitas %></span>
-                  <span class="fw-bold">
+                <div class="d-flex justify-content-between mt-3">
+                  <p class="mb-0">Jumlah: <%= item.kuantitas %></p>
+                  <p class="mb-0 fw-bold">
                     Rp <%= (item.harga_per_item *
                     item.kuantitas).toLocaleString('id-ID') %>
-                  </span>
+                  </p>
                 </div>
               </div>
             </div>
@@ -126,17 +108,17 @@
           <% }); %>
 
           <!-- Total -->
-          <div class="d-flex justify-content-between align-items-center mt-3">
-            <h6 class="fw-bold mb-0">Total Pembayaran</h6>
-            <h6 class="fw-bold mb-0">
+          <div class="d-flex justify-content-between align-items-center mt-4">
+            <h5 class="mb-0">Total Pembayaran</h5>
+            <h5 class="mb-0">
               Rp <%= pesanan.jumlah_total.toLocaleString('id-ID') %>
-            </h6>
+            </h5>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Sidebar Informasi -->
+    <!-- Sidebar -->
     <div class="col-md-4">
       <!-- Informasi Pembayaran -->
       <div class="card mb-4">
@@ -144,27 +126,23 @@
           <h5 class="card-title">Informasi Pembayaran</h5>
 
           <% if(pesanan.Pembayaran) { %>
-          <div class="mb-3">
-            <p class="mb-1"><strong>Status:</strong></p>
-            <span
-              class="badge <%= pesanan.Pembayaran.status_pembayaran === 'paid' ? 'bg-success' : pesanan.Pembayaran.status_pembayaran === 'pending' ? 'bg-warning' : 'bg-danger' %>"
-            >
-              <%= pesanan.Pembayaran.status_pembayaran %>
-            </span>
+          <div
+            class="alert <%= pesanan.Pembayaran.status_pembayaran === 'paid' ? 'alert-success' : pesanan.Pembayaran.status_pembayaran === 'pending' ? 'alert-warning' : 'alert-danger' %> mb-3"
+          >
+            Status: <%= pesanan.Pembayaran.status_pembayaran %>
           </div>
 
           <p class="mb-1"><strong>Metode Pembayaran:</strong></p>
           <p class="mb-3"><%= pesanan.Pembayaran.metode_pembayaran %></p>
 
           <% if(pesanan.Pembayaran.bukti_pembayaran) { %>
-          <p class="mb-1"><strong>Bukti Pembayaran:</strong></p>
+          <p class="mb-2"><strong>Bukti Pembayaran:</strong></p>
           <img
             src="/uploads/payments/<%= pesanan.Pembayaran.bukti_pembayaran %>"
             class="img-fluid rounded mb-3"
             alt="Bukti Pembayaran"
           />
-          <% } %> <% } else if(pesanan.StatusPesanan.nama_status === 'menunggu
-          pembayaran') { %>
+          <% } %> <% } else { %>
           <div class="alert alert-warning">
             <p class="mb-2">Silakan lakukan pembayaran sebesar:</p>
             <h5 class="mb-3">
@@ -180,24 +158,79 @@
               href="/orders/<%= pesanan.id_pesanan %>/upload-payment"
               class="btn btn-warning w-100"
             >
-              Upload Bukti Pembayaran
+              <i class="fas fa-upload me-2"></i> Upload Bukti Pembayaran
             </a>
           </div>
           <% } %>
         </div>
       </div>
 
-      <!-- Status Pesanan -->
+      <!-- Informasi Pengiriman -->
+      <% if(pesanan.Pengiriman) { %>
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Informasi Pengiriman</h5>
+
+          <% if(pesanan.Pengiriman.AlamatPengiriman) { %>
+          <div class="mb-3">
+            <p class="mb-1"><strong>Alamat Pengiriman:</strong></p>
+            <p class="mb-1">
+              <%= pesanan.Pengiriman.AlamatPengiriman.alamat_jalan %>
+            </p>
+            <p class="mb-1">
+              <%= pesanan.Pengiriman.AlamatPengiriman.kecamatan %>
+            </p>
+            <p class="mb-1">
+              <%= pesanan.Pengiriman.AlamatPengiriman.provinsi %>
+            </p>
+            <p class="mb-1">
+              <%= pesanan.Pengiriman.AlamatPengiriman.kode_pos %>
+            </p>
+          </div>
+          <% } %>
+
+          <div class="mb-3">
+            <p class="mb-1"><strong>Jasa Pengiriman:</strong></p>
+            <p class="mb-0"><%= pesanan.Pengiriman.jasa_pengiriman %></p>
+          </div>
+
+          <% if(pesanan.Pengiriman.nomor_resi) { %>
+          <div class="mb-3">
+            <p class="mb-1"><strong>Nomor Resi:</strong></p>
+            <p class="mb-0"><%= pesanan.Pengiriman.nomor_resi %></p>
+          </div>
+          <% } %>
+
+          <div class="mb-3">
+            <p class="mb-1"><strong>Status Pengiriman:</strong></p>
+            <span class="badge bg-info"
+              ><%= pesanan.Pengiriman.status_pengiriman %></span
+            >
+          </div>
+
+          <div class="mb-0">
+            <p class="mb-1"><strong>Biaya Pengiriman:</strong></p>
+            <p class="mb-0">
+              Rp <%= pesanan.Pengiriman.biaya_pengiriman.toLocaleString('id-ID')
+              %>
+            </p>
+          </div>
+        </div>
+      </div>
+      <% } %>
+
+      <!-- Riwayat Status -->
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title mb-4">Status Pesanan</h5>
+          <h5 class="card-title mb-4">Riwayat Status</h5>
 
           <div class="timeline">
-            <% if(pesanan.RiwayatStatusPesanan) { %> <%
-            pesanan.RiwayatStatusPesanan.forEach(riwayat => { %>
+            <% if(pesanan.RiwayatStatusPesanan &&
+            pesanan.RiwayatStatusPesanan.length > 0) { %> <%
+            pesanan.RiwayatStatusPesanan.forEach((riwayat, index) => { %>
             <div class="timeline-item">
               <div
-                class="timeline-badge <%= riwayat.StatusRiwayat.nama_status === 'selesai' ? 'bg-success' : riwayat.StatusRiwayat.nama_status === 'diproses' ? 'bg-info' : 'bg-secondary' %>"
+                class="timeline-badge <%= riwayat.StatusRiwayat.nama_status === 'selesai' ? 'bg-success' : riwayat.StatusRiwayat.nama_status === 'diproses' ? 'bg-info' : riwayat.StatusRiwayat.nama_status === 'dibatalkan' ? 'bg-danger' : 'bg-secondary' %>"
               ></div>
               <div class="timeline-content">
                 <h6 class="mb-1"><%= riwayat.StatusRiwayat.nama_status %></h6>
@@ -212,7 +245,7 @@
                 <% } %>
               </div>
             </div>
-            <% }); %> <% } else { %>
+            <% }) %> <% } else { %>
             <p class="text-muted">Belum ada riwayat status</p>
             <% } %>
           </div>
@@ -227,21 +260,26 @@
     font-size: 0.9rem;
     padding: 0.5em 1em;
   }
-
+  .alert {
+    margin-bottom: 0;
+  }
+  .card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1rem;
+  }
+  /* Timeline styles */
   .timeline {
     position: relative;
     padding-left: 30px;
   }
-
   .timeline-item {
     position: relative;
     padding-bottom: 1.5rem;
   }
-
   .timeline-item:last-child {
     padding-bottom: 0;
   }
-
   .timeline-badge {
     width: 12px;
     height: 12px;
@@ -250,12 +288,10 @@
     left: -6px;
     top: 4px;
   }
-
   .timeline-content {
     padding-left: 15px;
     border-left: 2px solid #dee2e6;
   }
-
   .timeline-item:last-child .timeline-content {
     border-left: none;
   }

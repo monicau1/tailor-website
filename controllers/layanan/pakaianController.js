@@ -4,6 +4,8 @@ const {
   Pakaian,
   GambarPakaian,
   VarianPakaian,
+  Keranjang,
+  ItemKeranjang,
   Pesanan,
   ItemPesanan,
   PermintaanUkuranKhusus,
@@ -108,6 +110,7 @@ exports.detailPakaian = async (req, res) => {
   try {
     const { id } = req.params;
 
+    // Query untuk mengambil data pakaian beserta relasinya
     const pakaian = await Pakaian.findOne({
       where: {
         id_pakaian: id,
@@ -128,37 +131,29 @@ exports.detailPakaian = async (req, res) => {
       ],
     });
 
+    // Debug log
+    console.log("Detail Pakaian Query Result:", {
+      id: pakaian?.id_pakaian,
+      nama: pakaian?.nama_pakaian,
+      varianCount: pakaian?.VarianPakaian?.length || 0,
+      gambarCount: pakaian?.GambarPakaian?.length || 0,
+    });
+
     if (!pakaian) {
+      console.log("Pakaian not found");
       return res.status(404).render("pages/404", {
         title: "404 - Pakaian Tidak Ditemukan",
       });
     }
 
-    // Get related products from same category
-    const relatedPakaian = await Pakaian.findAll({
-      where: {
-        id_kategori_pakaian: pakaian.id_kategori_pakaian,
-        id_pakaian: { [Op.ne]: id }, // exclude current product
-        status_produk: "active",
-      },
-      include: [
-        {
-          model: GambarPakaian,
-          as: "GambarPakaian",
-          where: { is_primary: true },
-          required: false,
-        },
-      ],
-      limit: 3,
-    });
-
+    // Render halaman detail
     res.render("pages/layanan/pakaian/detail", {
       title: pakaian.nama_pakaian,
-      pakaian,
-      relatedPakaian,
+      pakaian: pakaian,
+      messages: req.flash(),
     });
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error in detailPakaian:", error);
     res.status(500).render("pages/error", {
       title: "Error",
       message: "Terjadi kesalahan saat memuat halaman",
@@ -239,13 +234,60 @@ exports.search = async (req, res) => {
   }
 };
 
-// Tambah item ke keranjang
+exports.checkStock = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { ukuran, warna } = req.query;
+
+    // Cari varian yang sesuai
+    const varian = await VarianPakaian.findOne({
+      where: {
+        id_pakaian: id,
+        ukuran: ukuran,
+        warna: warna,
+      },
+    });
+
+    // Kirim response
+    res.json({
+      stok: varian ? varian.stok : 0,
+    });
+  } catch (error) {
+    console.error("Error checking stock:", error);
+    res.status(500).json({
+      error: "Gagal mengecek stok",
+      stok: 0,
+    });
+  }
+};
+
+// Update method addToCart
 exports.addToCart = async (req, res) => {
   try {
     const { id } = req.params;
-    const { varianId, quantity = 1 } = req.body;
+    const { ukuran, warna, quantity = 1, isCustomSize } = req.body;
 
-    // Cari atau buat keranjang khusus untuk jahit
+    // Cari varian yang sesuai
+    const varian = await VarianPakaian.findOne({
+      where: {
+        id_pakaian: id,
+        ukuran: ukuran,
+        warna: warna,
+      },
+      include: [
+        {
+          model: Pakaian,
+          as: "Pakaian",
+        },
+      ],
+    });
+
+    if (!varian || varian.stok < quantity) {
+      req.flash("error", "Stok tidak tersedia");
+      return res.redirect("back");
+    }
+
+    // Proses selanjutnya sama seperti sebelumnya...
     const [keranjang] = await Keranjang.findOrCreate({
       where: {
         id_pelanggan: req.session.userId,
@@ -257,26 +299,10 @@ exports.addToCart = async (req, res) => {
       },
     });
 
-    // Dapatkan informasi varian dan harga
-    const varian = await VarianPakaian.findByPk(varianId, {
-      include: [
-        {
-          model: Pakaian,
-          as: "Pakaian",
-        },
-      ],
-    });
-
-    if (!varian) {
-      req.flash("error", "Varian pakaian tidak ditemukan");
-      return res.redirect("back");
-    }
-
-    // Tambahkan ke keranjang
+    // Tambah ke keranjang
     await ItemKeranjang.create({
       id_keranjang: keranjang.id_keranjang,
-      jenis_layanan: "jahit",
-      id_varian_pakaian: varianId,
+      id_varian_pakaian: varian.id_varian_pakaian,
       kuantitas: quantity,
       harga_per_item: varian.Pakaian.harga,
     });

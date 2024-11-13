@@ -71,6 +71,7 @@ exports.listOrders = async (req, res) => {
 };
 
 // Detail pesanan
+// Di orderController.js
 exports.orderDetail = async (req, res) => {
   try {
     const { id } = req.params;
@@ -98,39 +99,13 @@ exports.orderDetail = async (req, res) => {
               model: VarianPakaian,
               as: "VarianPakaian",
               required: false,
-              include: [
-                {
-                  model: Pakaian,
-                  as: "Pakaian",
-                },
-              ],
-            },
-            {
-              model: InstruksiKhusus,
-              as: "InstruksiKhusus",
-              required: false,
-            },
-            {
-              model: PermintaanUkuranKhusus,
-              as: "UkuranKhusus",
-              required: false,
+              include: [{ model: Pakaian, as: "Pakaian" }],
             },
           ],
         },
         {
           model: Pembayaran,
           as: "Pembayaran",
-        },
-        {
-          model: RiwayatStatusPesanan,
-          as: "RiwayatStatusPesanan",
-          include: [
-            {
-              model: StatusPesanan,
-              as: "StatusRiwayat",
-            },
-          ],
-          order: [["tanggal_status", "DESC"]],
         },
       ],
     });
@@ -140,16 +115,19 @@ exports.orderDetail = async (req, res) => {
       return res.redirect("/orders");
     }
 
-    // Tentukan jenis pesanan
-    const isPermak = pesanan.ItemPesanan.some((item) => item.JenisPermak);
-    pesanan.jenis_layanan = isPermak ? "permak" : "jahit";
+    // Debug log
+    console.log("Pesanan ditemukan:", {
+      id: pesanan.id_pesanan,
+      status: pesanan.StatusPesanan?.nama_status,
+      items: pesanan.ItemPesanan?.length || 0,
+    });
 
     res.render("pages/orders/detail", {
       title: `Detail Pesanan #${pesanan.id_pesanan}`,
       pesanan,
     });
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error pada detail pesanan:", error);
     req.flash("error", "Gagal memuat detail pesanan");
     res.redirect("/orders");
   }

@@ -24,6 +24,10 @@ const ItemPesanan = sequelize.define(
     id_instruksi_khusus: {
       type: DataTypes.INTEGER,
     },
+    id_ukuran_khusus: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     id_status_master: {
       type: DataTypes.INTEGER,
       allowNull: false,

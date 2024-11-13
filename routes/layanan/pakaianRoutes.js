@@ -18,4 +18,6 @@ router.post("/add-to-cart/:id", pakaianController.addToCart);
 // Search
 router.get("/search", pakaianController.search);
 
+router.get("/check-stock/:id", pakaianController.checkStock);
+
 module.exports = router;

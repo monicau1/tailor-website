@@ -66,6 +66,7 @@ const pakaianRoutes = require("./routes/layanan/pakaianRoutes");
 const keranjangRoutes = require("./routes/keranjangRoutes");
 const checkoutRoutes = require("./routes/checkoutRoutes");
 const alamatRoutes = require("./routes/alamatRoutes");
+const profileRoutes = require("./routes/profileRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 
 // Authentication middleware
@@ -78,6 +79,7 @@ app.use("/pakaian", pakaianRoutes);
 app.use("/cart", authMiddleware.isAuthenticated, keranjangRoutes);
 app.use("/checkout", authMiddleware.isAuthenticated, checkoutRoutes);
 app.use("/alamat", authMiddleware.isAuthenticated, alamatRoutes);
+app.use("/profile", authMiddleware.isAuthenticated, profileRoutes);
 app.use("/orders", authMiddleware.isAuthenticated, orderRoutes);
 
 // Home route

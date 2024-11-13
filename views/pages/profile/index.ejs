@@ -1,11 +1,30 @@
 <!-- views/pages/profile/index.ejs -->
 <div class="container py-5">
-  <h2 class="mb-4">Profil Saya</h2>
-
   <div class="row">
-    <!-- Profile Info -->
-    <div class="col-md-6 mb-4">
+    <!-- Sidebar -->
+    <div class="col-md-3 mb-4">
       <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Menu Profil</h5>
+          <div class="nav flex-column nav-pills">
+            <a class="nav-link active" href="/profile">
+              <i class="fas fa-user me-2"></i>Informasi Akun
+            </a>
+            <a class="nav-link" href="/profile/alamat/tambah">
+              <i class="fas fa-map-marker-alt me-2"></i>Tambah Alamat
+            </a>
+            <a class="nav-link" href="/orders">
+              <i class="fas fa-shopping-bag me-2"></i>Pesanan Saya
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-9">
+      <!-- Profile Info -->
+      <div class="card mb-4">
         <div class="card-body">
           <h5 class="card-title mb-4">Informasi Pribadi</h5>
 
@@ -50,17 +69,15 @@
               />
             </div>
 
-            <button type="submit" class="btn btn-success w-100">
+            <button type="submit" class="btn btn-success">
               <i class="fas fa-save me-2"></i>Simpan Perubahan
             </button>
           </form>
         </div>
       </div>
-    </div>
 
-    <!-- Password Change -->
-    <div class="col-md-6">
-      <div class="card">
+      <!-- Password Change -->
+      <div class="card mb-4">
         <div class="card-body">
           <h5 class="card-title mb-4">Ubah Password</h5>
 
@@ -104,16 +121,14 @@
               />
             </div>
 
-            <button type="submit" class="btn btn-warning w-100">
+            <button type="submit" class="btn btn-warning">
               <i class="fas fa-key me-2"></i>Ubah Password
             </button>
           </form>
         </div>
       </div>
-    </div>
 
-    <!-- Addresses Section -->
-    <div class="col-12 mt-4">
+      <!-- Addresses Section -->
       <div class="card">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-4">
@@ -176,33 +191,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Account Stats -->
-    <div class="col-12 mt-4">
-      <div class="row">
-        <div class="col-md-6 mb-4">
-          <div class="card bg-light">
-            <div class="card-body text-center">
-              <h6 class="card-subtitle mb-2 text-muted">Tanggal Bergabung</h6>
-              <p class="h4">
-                <%= new
-                Date(pelanggan.tanggal_registrasi_pelanggan).toLocaleDateString('id-ID',
-                { day: 'numeric', month: 'long', year: 'numeric' }) %>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6 mb-4">
-          <div class="card bg-light">
-            <div class="card-body text-center">
-              <h6 class="card-subtitle mb-2 text-muted">Status Akun</h6>
-              <p class="h4"><span class="badge bg-success">Aktif</span></p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -214,6 +202,21 @@
 
   .btn {
     padding: 0.6rem 1rem;
+  }
+
+  .nav-pills .nav-link {
+    color: #333;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .nav-pills .nav-link.active {
+    background-color: #198754;
+    color: white;
+  }
+
+  .nav-pills .nav-link:not(.active):hover {
+    background-color: #f8f9fa;
   }
 
   .badge {

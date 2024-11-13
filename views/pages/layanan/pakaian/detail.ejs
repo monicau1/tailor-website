@@ -42,7 +42,6 @@
       <div class="card">
         <div class="card-body">
           <h1 class="h2"><%= pakaian.nama_pakaian %></h1>
-
           <p class="h3 py-2">Rp <%= pakaian.harga.toLocaleString('id-ID') %></p>
 
           <% if(pakaian.deskripsi_pakaian) { %>
@@ -50,27 +49,60 @@
           <% } %>
 
           <form
+            id="formPakaian"
+            data-id-pakaian="<%= pakaian.id_pakaian %>"
             action="/pakaian/add-to-cart/<%= pakaian.id_pakaian %>"
             method="POST"
             class="mt-4"
           >
-            <!-- Ukuran -->
-            <% if(pakaian.VarianPakaian && pakaian.VarianPakaian.length > 0) {
-            %>
-            <div class="mb-3">
-              <label class="form-label">Ukuran:</label>
-              <select name="varianId" class="form-select" required>
-                <option value="">Pilih Ukuran</option>
-                <% pakaian.VarianPakaian.forEach(varian => { %>
-                <option value="<%= varian.id_varian_pakaian %>">
-                  <%= varian.ukuran %>
-                </option>
-                <% }) %>
-              </select>
-            </div>
-            <% } %>
+            <div class="row">
+              <!-- Ukuran -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Ukuran</label>
+                <select
+                  name="ukuran"
+                  class="form-select"
+                  required
+                  onchange="checkStock()"
+                >
+                  <option value="">Pilih Ukuran</option>
+                  <% let ukuranList = []; if(pakaian.VarianPakaian &&
+                  pakaian.VarianPakaian.length > 0) {
+                  pakaian.VarianPakaian.forEach(varian => { if(varian.ukuran &&
+                  !ukuranList.includes(varian.ukuran)) {
+                  ukuranList.push(varian.ukuran); } }); ukuranList.sort(); } %>
+                  <% ukuranList.forEach(ukuran => { %>
+                  <option value="<%= ukuran %>"><%= ukuran %></option>
+                  <% }); %>
+                </select>
+              </div>
 
-            <!-- Custom Ukuran -->
+              <!-- Warna -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Warna</label>
+                <select
+                  name="warna"
+                  class="form-select"
+                  required
+                  onchange="checkStock()"
+                >
+                  <option value="">Pilih Warna</option>
+                  <% let warnaList = []; if(pakaian.VarianPakaian &&
+                  pakaian.VarianPakaian.length > 0) {
+                  pakaian.VarianPakaian.forEach(varian => { if(varian.warna &&
+                  !warnaList.includes(varian.warna)) {
+                  warnaList.push(varian.warna); } }); warnaList.sort(); } %> <%
+                  warnaList.forEach(warna => { %>
+                  <option value="<%= warna %>"><%= warna %></option>
+                  <% }); %>
+                </select>
+              </div>
+            </div>
+
+            <!-- Informasi Stok -->
+            <div id="stokInfo" class="mb-3"></div>
+
+            <!-- Checkbox Custom Size -->
             <div class="mb-3">
               <div class="form-check">
                 <input
@@ -85,6 +117,7 @@
               </div>
             </div>
 
+            <!-- Form Custom Size -->
             <div id="customSizeForm" class="d-none">
               <div class="row g-3 mb-3">
                 <div class="col-md-6">
@@ -135,7 +168,7 @@
               </div>
             </div>
 
-            <!-- Catatan Tambahan -->
+            <!-- Catatan -->
             <div class="mb-3">
               <label class="form-label">Catatan Khusus:</label>
               <textarea
@@ -178,6 +211,7 @@
               </div>
             </div>
 
+            <!-- Submit Button -->
             <div class="row pb-3">
               <div class="col d-grid">
                 <button type="submit" class="btn btn-success btn-lg">
@@ -191,36 +225,6 @@
     </div>
   </div>
 </div>
-
-<!-- JavaScript untuk form -->
-<script>
-  // Toggle custom size form
-  document.getElementById("customSize").addEventListener("change", function () {
-    const customSizeForm = document.getElementById("customSizeForm");
-    if (this.checked) {
-      customSizeForm.classList.remove("d-none");
-    } else {
-      customSizeForm.classList.add("d-none");
-    }
-  });
-
-  // Quantity controls
-  const quantityInput = document.getElementById("quantity");
-  const decrementBtn = document.getElementById("decrementBtn");
-  const incrementBtn = document.getElementById("incrementBtn");
-
-  decrementBtn.addEventListener("click", () => {
-    const currentValue = parseInt(quantityInput.value);
-    if (currentValue > 1) {
-      quantityInput.value = currentValue - 1;
-    }
-  });
-
-  incrementBtn.addEventListener("click", () => {
-    const currentValue = parseInt(quantityInput.value);
-    quantityInput.value = currentValue + 1;
-  });
-</script>
 
 <style>
   .card-img {
@@ -251,3 +255,6 @@
     width: 150px;
   }
 </style>
+
+<!-- Load JavaScript terpisah -->
+<script src="/js/detail-pakaian-script.js"></script>

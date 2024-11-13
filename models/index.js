@@ -271,6 +271,17 @@ ItemKeranjang.belongsTo(InstruksiKhusus, {
   as: "InstruksiKhusus",
 });
 
+// Relasi dengan PermintaanUkuranKhusus
+PermintaanUkuranKhusus.hasMany(ItemPesanan, {
+  foreignKey: "id_ukuran_khusus",
+  as: "ItemPesananUkuran",
+});
+
+ItemPesanan.belongsTo(PermintaanUkuranKhusus, {
+  foreignKey: "id_ukuran_khusus",
+  as: "UkuranKhusus",
+});
+
 module.exports = {
   KategoriPakaian,
   Pakaian,
